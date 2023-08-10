@@ -229,6 +229,7 @@ GameObject:
   - component: {fileID: 1077208927}
   - component: {fileID: 1077208926}
   - component: {fileID: 1077208929}
+  - component: {fileID: 1077208930}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -334,6 +335,20 @@ MonoBehaviour:
   Dirt: {fileID: 2100000, guid: 7457ad4b0e4ef4c4483950657d888d65, type: 2}
   Gravel: {fileID: 2100000, guid: a654d9327e3d3fd4bb894b5facdf9ac4, type: 2}
   Snow: {fileID: 2100000, guid: d55fc7798a7f2e045ab0f5df1bb7dd00, type: 2}
+--- !u!114 &1077208930
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1077208925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8530022bc3b076142bd660d7b38cfb63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 8
+  rotationSpeed: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

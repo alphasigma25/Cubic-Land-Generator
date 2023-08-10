@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class WorldBuilder : MonoBehaviour
@@ -37,15 +38,25 @@ public class WorldBuilder : MonoBehaviour
             {
                 for (int k = 0; k < IGenerator.ZONE_SIZE; k++)
                 {
-                    if (zone[i, k, j] != BlocType.Air)
+                    BlocType type = zone[i, j, k];
+                    if (type != BlocType.Air)
                     {
                         GameObject newCube = Instantiate(Cube, new Vector3(i, j, k), Quaternion.identity);
 
-                        newCube.GetComponent<MeshRenderer>().material = zone[i, k, j] switch
+                        newCube.GetComponent<MeshRenderer>().material = type switch
                         {
+                            BlocType.Leaves => Leaves,
+                            BlocType.Log => Log,
                             BlocType.Stone => Stone,
-                            BlocType.Earth => Dirt,
-                            _ => throw new System.Exception()
+                            BlocType.Sand => Sand,
+                            BlocType.Water => Water,
+                            BlocType.Grass => Grass,
+                            BlocType.Cactus => Cactus,
+                            BlocType.Diamond => Diamond,
+                            BlocType.Dirt => Dirt,
+                            BlocType.Gravel => Gravel,
+                            BlocType.Snow => Snow,
+                            _ => throw new InvalidOperationException()
                         };
                     }
                 }
