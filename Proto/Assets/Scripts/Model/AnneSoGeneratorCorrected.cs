@@ -10,11 +10,11 @@ internal class AnneSoGeneratorCorrected : IGenerator
             int[,] heights = new int[IGenerator.ZONE_SIZE, IGenerator.ZONE_SIZE];
             for (int i = 0; i < IGenerator.ZONE_SIZE; ++i)
             {
+                float correctedI = x + (i / IGenerator.ZONE_SIZE_FLOAT);
                 for (int j = 0; j < IGenerator.ZONE_SIZE; ++j)
                 {
                     heights[i, j]
-                        = (int)(IGenerator.ZONE_SIZE * Mathf.PerlinNoise(
-                            x + (i / IGenerator.ZONE_SIZE_FLOAT), y + (j / IGenerator.ZONE_SIZE_FLOAT)));
+                        = (int)(IGenerator.ZONE_SIZE * Mathf.PerlinNoise(correctedI, y + (j / IGenerator.ZONE_SIZE_FLOAT)));
                 }
             }
             return heights;
