@@ -29,7 +29,7 @@ public class CameraMove : MonoBehaviour
         if (Input.GetKey(KeyCode.Q))
             transform.position -= Vector3.up * ms;
 
-        cm.MoveTo(transform.position);
+        cm.MoveTo(transform.position + (transform.forward * (10 * GenerationSize)));
 
         if (Input.GetMouseButtonDown(0))
         {
