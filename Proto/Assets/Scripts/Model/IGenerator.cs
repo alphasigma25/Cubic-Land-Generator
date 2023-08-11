@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public interface IGenerator
+internal interface IGenerator
 {
     const int ZONE_SIZE = (int)ZONE_SIZE_FLOAT;
 
@@ -9,7 +9,7 @@ public interface IGenerator
     public BlocType[,,] Generate(Vector3Int zone);
 }
 
-public enum BlocType
+internal enum BlocType
 {
     Air = 0,
     Leaves = 1,

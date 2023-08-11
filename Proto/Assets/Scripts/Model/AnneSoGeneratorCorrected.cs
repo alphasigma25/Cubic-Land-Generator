@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 
-internal class AnneSoGenerator1 : IGenerator
+internal class AnneSoGeneratorCorrected : IGenerator
 {
     public BlocType[,,] Generate(Vector3Int zone)
     {
         BlocType[,,] result = new BlocType[IGenerator.ZONE_SIZE, IGenerator.ZONE_SIZE, IGenerator.ZONE_SIZE];
-        const int MAX_STONE_HEIGHT = 1;
+        const int MAX_DIRT_HEIGHT = 1;
 
         // génération de la carte des hauteurs
         int[,] heights = new int[IGenerator.ZONE_SIZE, IGenerator.ZONE_SIZE];
@@ -14,7 +14,8 @@ internal class AnneSoGenerator1 : IGenerator
             for (int j = 0; j < IGenerator.ZONE_SIZE; ++j)
             {
                 heights[i, j]
-                    = (int)(Mathf.PerlinNoise(i / IGenerator.ZONE_SIZE_FLOAT, j / IGenerator.ZONE_SIZE_FLOAT) * IGenerator.ZONE_SIZE);
+                    = (int)(IGenerator.ZONE_SIZE * Mathf.PerlinNoise(
+                        zone.x + (i / IGenerator.ZONE_SIZE_FLOAT), zone.z + (j / IGenerator.ZONE_SIZE_FLOAT)));
             }
         }
 
@@ -28,9 +29,9 @@ internal class AnneSoGenerator1 : IGenerator
                         x + (zone.x * IGenerator.ZONE_SIZE),
                         y + (zone.y * IGenerator.ZONE_SIZE),
                         z + (zone.z * IGenerator.ZONE_SIZE));
-                    if (realCoord.z < heights[x, y] - MAX_STONE_HEIGHT)
+                    if (realCoord.y < heights[x, z] - MAX_DIRT_HEIGHT)
                         result[x, y, z] = BlocType.Stone;
-                    else if (realCoord.z < heights[x, y])
+                    else if (realCoord.y < heights[x, z])
                         result[x, y, z] = BlocType.Dirt;
                 }
             }

@@ -31,7 +31,7 @@ public class RessourcesManager : MonoBehaviour
 
     public static GameObject Cube => Instance.cube;
 
-    public static Material GetMaterial(BlocType type)
+    internal static Material GetMaterial(BlocType type)
     {
         return type switch
         {

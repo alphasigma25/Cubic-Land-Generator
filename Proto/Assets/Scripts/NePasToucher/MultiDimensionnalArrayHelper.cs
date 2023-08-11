@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 /// Merci a toute personne raisonable (particulièrement anne so) de ne pas chercher
 /// a comprendre ce que fait cette class ou comment elle marche
 /// </summary>
-public static class MultiDimensionnalArrayHelper
+internal static class MultiDimensionnalArrayHelper
 {
     public static void Fill<T>(this T[,,] array, T value)
     {

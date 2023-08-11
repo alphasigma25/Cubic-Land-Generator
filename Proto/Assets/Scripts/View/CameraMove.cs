@@ -9,22 +9,22 @@ public class CameraMove : MonoBehaviour
     {
         float ms = moveSpeed * Time.deltaTime;
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
-            transform.position += transform.forward * ms;
+            transform.position += (transform.forward * ms).WithY(0);
 
         if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
-            transform.position -= transform.forward * ms;
+            transform.position -= (transform.forward * ms).WithY(0);
 
         if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
-            transform.position += transform.right * ms;
+            transform.position += (transform.right * ms).WithY(0);
 
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
-            transform.position -= transform.right * ms;
+            transform.position -= (transform.right * ms).WithY(0);
 
         if (Input.GetKey(KeyCode.E))
-            transform.position += transform.up * ms;
+            transform.position += Vector3.up * ms;
 
         if (Input.GetKey(KeyCode.Q))
-            transform.position -= transform.up * ms;
+            transform.position -= Vector3.up * ms;
 
         cm.MoveTo(transform.position);
 

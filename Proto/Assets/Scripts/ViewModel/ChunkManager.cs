@@ -32,8 +32,6 @@ internal class ChunkManager
         int decalY = chunkCoordinate.y * IGenerator.ZONE_SIZE;
         int decalZ = chunkCoordinate.z * IGenerator.ZONE_SIZE;
 
-        Debug.Log(IGenerator.ZONE_SIZE);
-
         for (int i = 0; i < IGenerator.ZONE_SIZE; i++)
         {
             for (int j = 0; j < IGenerator.ZONE_SIZE; j++)
@@ -60,5 +58,5 @@ internal class ChunkManager
 
     private List<GameObject> CurrentBlocs = new();
 
-    private readonly IGenerator generator = new AnneSoGenerator1();
+    private readonly IGenerator generator = new AnneSoGeneratorCorrected();
 }
