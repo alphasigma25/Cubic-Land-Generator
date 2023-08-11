@@ -26,6 +26,8 @@ public class CameraMove : MonoBehaviour
         if (Input.GetKey(KeyCode.Q))
             transform.position -= transform.up * ms;
 
+        cm.MoveTo(transform.position);
+
         if (Input.GetMouseButtonDown(0))
         {
             mousePos = Input.mousePosition;
@@ -50,4 +52,5 @@ public class CameraMove : MonoBehaviour
     private bool mouseMove;
     private Vector2 mousePos;
     private Vector2 mouseAngle;
+    private readonly ChunkManager cm = new();
 }

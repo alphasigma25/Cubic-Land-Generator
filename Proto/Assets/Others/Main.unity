@@ -323,7 +323,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6417637db77192e458f43691a3aa535c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Cube: {fileID: 5715492112802207654, guid: 901c612268c96674b901900016b604fb, type: 3}
+  cube: {fileID: 5715492112802207654, guid: 901c612268c96674b901900016b604fb, type: 3}
   Leaves: {fileID: 2100000, guid: d8241d8e027243c46a979d170f9afa2c, type: 2}
   Log: {fileID: 2100000, guid: 4477f5247d2af4540afaa8f0bed89685, type: 2}
   Stone: {fileID: 2100000, guid: d55fc7798a7f2e045ab0f5df1bb7dd00, type: 2}
@@ -348,7 +348,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 8
-  rotationSpeed: 1
+  rotationSpeed: 0.8
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

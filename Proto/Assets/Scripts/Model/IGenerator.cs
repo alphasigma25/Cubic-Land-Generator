@@ -2,7 +2,9 @@ using UnityEngine;
 
 public interface IGenerator
 {
-    const int ZONE_SIZE = 10;
+    const int ZONE_SIZE = (int)ZONE_SIZE_FLOAT;
+
+    const float ZONE_SIZE_FLOAT = 16f;
 
     public BlocType[,,] Generate(Vector3Int zone);
 }
