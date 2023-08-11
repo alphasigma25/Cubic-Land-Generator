@@ -89,14 +89,60 @@ internal class ChunkManager
         int decalY = chunkCoordinate.y * IGenerator.ZONE_SIZE;
         int decalZ = chunkCoordinate.z * IGenerator.ZONE_SIZE;
 
-        for (int i = 0; i < IGenerator.ZONE_SIZE; i++)
+        const int maxMoins = IGenerator.ZONE_SIZE - 1;
+
+        for (int j = 0; j < IGenerator.ZONE_SIZE; j++)
         {
-            for (int j = 0; j < IGenerator.ZONE_SIZE; j++)
+            for (int k = 0; k < IGenerator.ZONE_SIZE; k++)
             {
-                for (int k = 0; k < IGenerator.ZONE_SIZE; k++)
+                BlocType type = zone[0, j, k];
+                if (type != BlocType.Air)
                 {
-                    BlocType type = zone[i, j, k];
-                    if (type != BlocType.Air)
+                    GameObject newCube
+                        = Object.Instantiate(
+                            RessourcesManager.Cube, new Vector3(decalX, j + decalY, k + decalZ), Quaternion.identity);
+                    newCube.GetComponent<MeshRenderer>().material = RessourcesManager.GetMaterial(type);
+                    list.Add(newCube);
+                }
+            }
+        }
+
+        for (int i = 1; i < maxMoins; i++)
+        {
+            for (int k = 0; k < IGenerator.ZONE_SIZE; k++)
+            {
+                BlocType type = zone[i, 0, k];
+                if (type != BlocType.Air)
+                {
+                    GameObject newCube
+                        = Object.Instantiate(
+                            RessourcesManager.Cube, new Vector3(i + decalX, decalY, k + decalZ), Quaternion.identity);
+                    newCube.GetComponent<MeshRenderer>().material = RessourcesManager.GetMaterial(type);
+                    list.Add(newCube);
+                }
+            }
+
+            for (int j = 1; j < maxMoins; j++)
+            {
+                BlocType type = zone[i, j, 0];
+                if (type != BlocType.Air)
+                {
+                    GameObject newCube
+                        = Object.Instantiate(
+                            RessourcesManager.Cube, new Vector3(i + decalX, j + decalY, decalZ), Quaternion.identity);
+                    newCube.GetComponent<MeshRenderer>().material = RessourcesManager.GetMaterial(type);
+                    list.Add(newCube);
+                }
+
+                for (int k = 1; k < maxMoins; k++)
+                {
+                    type = zone[i, j, k];
+
+                    bool nearAir = zone[i + 1, j, k] == BlocType.Air || zone[i - 1, j, k] == BlocType.Air ||
+                        zone[i, j + 1, k] == BlocType.Air || zone[i, j - 1, k] == BlocType.Air ||
+                        zone[i, j, k + 1] == BlocType.Air || zone[i, j, k - 1] == BlocType.Air;
+
+                    if (nearAir && type != BlocType.Air)
                     {
                         GameObject newCube
                             = Object.Instantiate(
@@ -104,6 +150,45 @@ internal class ChunkManager
                         newCube.GetComponent<MeshRenderer>().material = RessourcesManager.GetMaterial(type);
                         list.Add(newCube);
                     }
+                }
+
+                type = zone[i, j, maxMoins];
+                if (type != BlocType.Air)
+                {
+                    GameObject newCube
+                        = Object.Instantiate(
+                            RessourcesManager.Cube, new Vector3(i + decalX, j + decalY, maxMoins + decalZ), Quaternion.identity);
+                    newCube.GetComponent<MeshRenderer>().material = RessourcesManager.GetMaterial(type);
+                    list.Add(newCube);
+                }
+            }
+
+            for (int k = 0; k < IGenerator.ZONE_SIZE; k++)
+            {
+                BlocType type = zone[i, maxMoins, k];
+                if (type != BlocType.Air)
+                {
+                    GameObject newCube
+                        = Object.Instantiate(
+                            RessourcesManager.Cube, new Vector3(i + decalX, maxMoins + decalY, k + decalZ), Quaternion.identity);
+                    newCube.GetComponent<MeshRenderer>().material = RessourcesManager.GetMaterial(type);
+                    list.Add(newCube);
+                }
+            }
+        }
+
+        for (int j = 0; j < IGenerator.ZONE_SIZE; j++)
+        {
+            for (int k = 0; k < IGenerator.ZONE_SIZE; k++)
+            {
+                BlocType type = zone[maxMoins, j, k];
+                if (type != BlocType.Air)
+                {
+                    GameObject newCube
+                        = Object.Instantiate(
+                            RessourcesManager.Cube, new Vector3(maxMoins + decalX, j + decalY, k + decalZ), Quaternion.identity);
+                    newCube.GetComponent<MeshRenderer>().material = RessourcesManager.GetMaterial(type);
+                    list.Add(newCube);
                 }
             }
         }
