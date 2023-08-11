@@ -1,4 +1,8 @@
+using System;
+using System.Linq;
+using System.Reflection;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CameraMove : MonoBehaviour
 {
@@ -6,7 +10,33 @@ public class CameraMove : MonoBehaviour
     public float rotationSpeed;
     public uint GenerationSize;
 
-    public void Start() => cm = new(GenerationSize, new AnneSoGeneratorCorrected());
+    public GameObject Panel;
+
+    public GameObject Button;
+
+    public void Start()
+    {
+        int pos = -30;
+        foreach (TypeInfo t in typeof(CameraMove).Assembly.DefinedTypes)
+        {
+            if (t.ImplementedInterfaces.Contains(typeof(IGenerator)))
+            {
+                GameObject p = Instantiate(Button, Panel.transform);
+                p.transform.GetChild(0).GetComponent<TMPro.TMP_Text>().text = t.Name;
+                p.transform.localPosition = new(0, pos, 0);
+
+                p.GetComponent<Button>().onClick.AddListener(() =>
+                {
+                    Destroy(Panel);
+                    cm = new ChunkManager(GenerationSize, (IGenerator)Activator.CreateInstance(t.AsType()));
+                });
+
+                pos -= 30 + 10;
+            }
+        }
+
+        Panel.GetComponent<RectTransform>().sizeDelta = new(400, -pos);
+    }
 
     public void Update()
     {
@@ -29,7 +59,7 @@ public class CameraMove : MonoBehaviour
         if (Input.GetKey(KeyCode.Q))
             transform.position -= Vector3.up * ms;
 
-        cm.MoveTo(transform.position + (transform.forward * (10 * GenerationSize)));
+        cm?.MoveTo(transform.position + (transform.forward * (10 * GenerationSize)));
 
         if (Input.GetMouseButtonDown(0))
         {
