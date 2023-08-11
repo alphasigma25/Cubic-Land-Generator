@@ -4,6 +4,9 @@ public class CameraMove : MonoBehaviour
 {
     public float moveSpeed;
     public float rotationSpeed;
+    public uint GenerationSize;
+
+    public void Start() => cm = new(GenerationSize);
 
     public void Update()
     {
@@ -52,5 +55,5 @@ public class CameraMove : MonoBehaviour
     private bool mouseMove;
     private Vector2 mousePos;
     private Vector2 mouseAngle;
-    private readonly ChunkManager cm = new();
+    private ChunkManager cm;
 }

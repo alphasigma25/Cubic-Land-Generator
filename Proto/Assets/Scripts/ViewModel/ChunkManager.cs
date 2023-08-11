@@ -1,9 +1,67 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using Math = System.Math;
 using MathF = System.MathF;
 
 internal class ChunkManager
 {
+    public ChunkManager(uint region)
+    {
+        regionSize = (int)region;
+        int max = (regionSize * 2) + 1;
+        generatedRegions = new List<GameObject>[max][][];
+        for (int i = 0; i < max; i++)
+        {
+            int localRegion = regionSize - Math.Abs(regionSize - i);
+
+            int localMax = (localRegion * 2) + 1;
+            generatedRegions[i] = new List<GameObject>[localMax][];
+            for (int j = 0; j < localMax; j++)
+            {
+                int subLocalRegion = localRegion - Math.Abs(localRegion - j);
+
+                int subLocalMax = (subLocalRegion * 2) + 1;
+                generatedRegions[i][j] = new List<GameObject>[subLocalMax];
+                for (int k = 0; k < subLocalMax; k++)
+                    generatedRegions[i][j][k] = new();
+            }
+        }
+    }
+
+    public void GenerateAll(Vector3Int chunkCoordinate)
+    {
+        foreach (List<GameObject>[][] n1 in generatedRegions)
+        {
+            foreach (List<GameObject>[] n2 in n1)
+            {
+                foreach (List<GameObject> n3 in n2)
+                {
+                    foreach (GameObject n4 in n3)
+                        Object.Destroy(n4);
+                }
+            }
+        }
+
+        int max = (regionSize * 2) + 1;
+        for (int i = 0; i < max; i++)
+        {
+            int localRegion = regionSize - Math.Abs(regionSize - i);
+
+            int localMax = (localRegion * 2) + 1;
+            for (int j = 0; j < localMax; j++)
+            {
+                int subLocalRegion = localRegion - Math.Abs(localRegion - j);
+
+                int subLocalMax = (subLocalRegion * 2) + 1;
+                for (int k = 0; k < subLocalMax; k++)
+                {
+                    generatedRegions[i][j][k] = InstanciateChunk(new Vector3Int(
+                        i - regionSize + chunkCoordinate.x, j - localRegion + chunkCoordinate.y, k - subLocalRegion + chunkCoordinate.z));
+                }
+            }
+        }
+    }
+
     public void MoveTo(Vector3 position)
     {
         Vector3Int chunkCoordinate = new(
@@ -14,10 +72,7 @@ internal class ChunkManager
         if (chunkCoordinate == currentPos)
             return;
 
-        foreach (GameObject item in CurrentBlocs)
-            Object.Destroy(item);
-
-        CurrentBlocs = InstanciateChunk(chunkCoordinate);
+        GenerateAll(chunkCoordinate);
 
         currentPos = chunkCoordinate;
     }
@@ -56,7 +111,9 @@ internal class ChunkManager
 
     private Vector3Int currentPos = new(int.MinValue, int.MinValue, int.MinValue);
 
-    private List<GameObject> CurrentBlocs = new();
-
     private readonly IGenerator generator = new AnneSoGeneratorCorrected();
+
+    private readonly List<GameObject>[][][] generatedRegions;
+
+    private readonly int regionSize;
 }
