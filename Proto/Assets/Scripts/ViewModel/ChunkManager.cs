@@ -80,6 +80,11 @@ internal class ChunkManager
         }
     }
 
+    /// <summary>
+    /// Crée la bordure de la partie remplie de la zone
+    /// </summary>
+    /// <param name="chunkCoordinate"></param>
+    /// <returns>Liste des cubes créés</returns>
     private List<GameObject> InstanciateChunk(Vector3Int chunkCoordinate)
     {
         List<GameObject> list = new();
