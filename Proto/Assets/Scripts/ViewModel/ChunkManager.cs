@@ -9,22 +9,23 @@ internal class ChunkManager
     public ChunkManager(uint region, IGenerator generator)
     {
         chunks = new TriCache<BlocType[,,]>((x, y, z) => generator.Generate(new Vector3Int(x, y, z)));
+        blocCache = new(() => Object.Instantiate(RessourcesManager.Cube, new Vector3(0, 0, 0), Quaternion.identity));
 
         regionSize = (int)region;
         int max = (regionSize * 2) + 1;
-        generatedRegions = new List<GameObject>[max][][];
+        generatedRegions = new Stack<GameObject>[max][][];
         for (int i = 0; i < max; i++)
         {
             int localRegion = regionSize - Math.Abs(regionSize - i);
 
             int localMax = (localRegion * 2) + 1;
-            generatedRegions[i] = new List<GameObject>[localMax][];
+            generatedRegions[i] = new Stack<GameObject>[localMax][];
             for (int j = 0; j < localMax; j++)
             {
                 int subLocalRegion = localRegion - Math.Abs(localRegion - j);
 
                 int subLocalMax = (subLocalRegion * 2) + 1;
-                generatedRegions[i][j] = new List<GameObject>[subLocalMax];
+                generatedRegions[i][j] = new Stack<GameObject>[subLocalMax];
                 for (int k = 0; k < subLocalMax; k++)
                     generatedRegions[i][j][k] = new();
             }
@@ -48,15 +49,12 @@ internal class ChunkManager
 
     private void GenerateAll(Vector3Int chunkCoordinate)
     {
-        foreach (List<GameObject>[][] n1 in generatedRegions)
+        foreach (Stack<GameObject>[][] n1 in generatedRegions)
         {
-            foreach (List<GameObject>[] n2 in n1)
+            foreach (Stack<GameObject>[] n2 in n1)
             {
-                foreach (List<GameObject> n3 in n2)
-                {
-                    foreach (GameObject n4 in n3)
-                        Object.Destroy(n4);
-                }
+                foreach (Stack<GameObject> n3 in n2)
+                    blocCache.Add(n3);
             }
         }
 
@@ -80,9 +78,9 @@ internal class ChunkManager
         }
     }
 
-    private List<GameObject> InstanciateChunk(Vector3Int chunkCoordinate)
+    private Stack<GameObject> InstanciateChunk(Vector3Int chunkCoordinate)
     {
-        List<GameObject> list = new();
+        Stack<GameObject> list = new();
 
         BlocType[,,] zone = chunks[chunkCoordinate.x, chunkCoordinate.y, chunkCoordinate.z];
 
@@ -132,7 +130,7 @@ internal class ChunkManager
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void GenerateBloc(List<GameObject> list, BlocType[,,] zone, Vector3Int localPos, Vector3Int zonePos)
+    private void GenerateBloc(Stack<GameObject> list, BlocType[,,] zone, Vector3Int localPos, Vector3Int zonePos)
     {
         BlocType type = zone[localPos.x, localPos.y, localPos.z];
         if (type == BlocType.Air)
@@ -140,19 +138,19 @@ internal class ChunkManager
 
         Vector3Int finalPos = localPos + zonePos;
 
-        GameObject newCube
-            = Object.Instantiate(
-                RessourcesManager.Cube, new Vector3(finalPos.x, finalPos.y, finalPos.z), Quaternion.identity);
-
+        GameObject newCube = blocCache.Get();
+        newCube.transform.position = new Vector3(finalPos.x, finalPos.y, finalPos.z);
         newCube.GetComponent<MeshRenderer>().material = RessourcesManager.GetMaterial(type);
-        list.Add(newCube);
+        list.Push(newCube);
     }
 
     private Vector3Int currentPos = new(int.MinValue, int.MinValue, int.MinValue);
 
-    private readonly List<GameObject>[][][] generatedRegions;
+    private readonly Stack<GameObject>[][][] generatedRegions;
 
     private readonly int regionSize;
 
     private readonly TriCache<BlocType[,,]> chunks;
+
+    private readonly MutliStackCache<GameObject> blocCache;
 }
