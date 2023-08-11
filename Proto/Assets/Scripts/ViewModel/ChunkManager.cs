@@ -5,8 +5,10 @@ using MathF = System.MathF;
 
 internal class ChunkManager
 {
-    public ChunkManager(uint region)
+    public ChunkManager(uint region, IGenerator generator)
     {
+        chunks = new TriCache<BlocType[,,]>((x, y, z) => generator.Generate(new Vector3Int(x, y, z)));
+
         regionSize = (int)region;
         int max = (regionSize * 2) + 1;
         generatedRegions = new List<GameObject>[max][][];
@@ -28,7 +30,22 @@ internal class ChunkManager
         }
     }
 
-    public void GenerateAll(Vector3Int chunkCoordinate)
+    public void MoveTo(Vector3 position)
+    {
+        Vector3Int chunkCoordinate = new(
+            (int)MathF.Floor(position.x / IGenerator.ZONE_SIZE_FLOAT),
+            (int)MathF.Floor(position.y / IGenerator.ZONE_SIZE_FLOAT),
+            (int)MathF.Floor(position.z / IGenerator.ZONE_SIZE_FLOAT));
+
+        if (chunkCoordinate == currentPos)
+            return;
+
+        GenerateAll(chunkCoordinate);
+
+        currentPos = chunkCoordinate;
+    }
+
+    private void GenerateAll(Vector3Int chunkCoordinate)
     {
         foreach (List<GameObject>[][] n1 in generatedRegions)
         {
@@ -62,26 +79,11 @@ internal class ChunkManager
         }
     }
 
-    public void MoveTo(Vector3 position)
-    {
-        Vector3Int chunkCoordinate = new(
-            (int)MathF.Floor(position.x / IGenerator.ZONE_SIZE_FLOAT),
-            (int)MathF.Floor(position.y / IGenerator.ZONE_SIZE_FLOAT),
-            (int)MathF.Floor(position.z / IGenerator.ZONE_SIZE_FLOAT));
-
-        if (chunkCoordinate == currentPos)
-            return;
-
-        GenerateAll(chunkCoordinate);
-
-        currentPos = chunkCoordinate;
-    }
-
     private List<GameObject> InstanciateChunk(Vector3Int chunkCoordinate)
     {
         List<GameObject> list = new();
 
-        BlocType[,,] zone = generator.Generate(chunkCoordinate);
+        BlocType[,,] zone = chunks[chunkCoordinate.x, chunkCoordinate.y, chunkCoordinate.z];
 
         int decalX = chunkCoordinate.x * IGenerator.ZONE_SIZE;
         int decalY = chunkCoordinate.y * IGenerator.ZONE_SIZE;
@@ -111,9 +113,9 @@ internal class ChunkManager
 
     private Vector3Int currentPos = new(int.MinValue, int.MinValue, int.MinValue);
 
-    private readonly IGenerator generator = new AnneSoGeneratorCorrected();
-
     private readonly List<GameObject>[][][] generatedRegions;
 
     private readonly int regionSize;
+
+    private readonly TriCache<BlocType[,,]> chunks;
 }

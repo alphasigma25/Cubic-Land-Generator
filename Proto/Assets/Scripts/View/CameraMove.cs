@@ -6,7 +6,7 @@ public class CameraMove : MonoBehaviour
     public float rotationSpeed;
     public uint GenerationSize;
 
-    public void Start() => cm = new(GenerationSize);
+    public void Start() => cm = new(GenerationSize, new AnneSoGeneratorCorrected());
 
     public void Update()
     {
