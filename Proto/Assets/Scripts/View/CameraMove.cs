@@ -46,6 +46,9 @@ public class CameraMove : MonoBehaviour
     public void Update()
     {
         float ms = moveSpeed * Time.deltaTime;
+
+        #region input
+
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
             transform.position += (transform.forward * ms).WithY(0);
 
@@ -64,7 +67,11 @@ public class CameraMove : MonoBehaviour
         if (Input.GetKey(KeyCode.Q))
             transform.position -= Vector3.up * ms;
 
+        #endregion input
+
         cm?.MoveTo(transform.position + (transform.forward * (10 * GenerationSize)));
+
+        #region camera_angle
 
         if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
         {
@@ -85,6 +92,8 @@ public class CameraMove : MonoBehaviour
         transform.eulerAngles = mouseAngle;
 
         mousePos = Input.mousePosition;
+
+        #endregion camera_angle
     }
 
     private bool mouseMove;
