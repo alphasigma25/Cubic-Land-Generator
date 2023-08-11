@@ -349,7 +349,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 8
   rotationSpeed: 0.8
-  GenerationSize: 1
+  GenerationSize: 2
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
