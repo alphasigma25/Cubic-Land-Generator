@@ -17,6 +17,9 @@ public class CameraMove : MonoBehaviour
     public void Start()
     {
         int pos = -30;
+
+        pos += 145; // Je ne sais pas pourquoi il faut faire cette correction mais elle marche
+
         foreach (TypeInfo t in typeof(CameraMove).Assembly.DefinedTypes)
         {
             if (t.ImplementedInterfaces.Contains(typeof(IGenerator)))
@@ -34,6 +37,8 @@ public class CameraMove : MonoBehaviour
                 pos -= 30 + 10;
             }
         }
+
+        pos -= 145; // Inversion de la correction précédente
 
         Panel.GetComponent<RectTransform>().sizeDelta = new(400, -pos);
     }
@@ -61,12 +66,12 @@ public class CameraMove : MonoBehaviour
 
         cm?.MoveTo(transform.position + (transform.forward * (10 * GenerationSize)));
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
         {
             mousePos = Input.mousePosition;
             mouseMove = true;
         }
-        else if (Input.GetMouseButtonUp(0))
+        else if (Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1))
         {
             mouseMove = false;
         }

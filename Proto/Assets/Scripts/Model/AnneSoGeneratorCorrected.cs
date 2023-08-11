@@ -28,19 +28,18 @@ internal class AnneSoGeneratorCorrected : IGenerator
 
         int[,] heights = heigthsCache[zone.x, zone.z];
 
+        int YCorrection = zone.y * IGenerator.ZONE_SIZE;
+
         for (int x = 0; x < IGenerator.ZONE_SIZE; ++x)
         {
             for (int y = 0; y < IGenerator.ZONE_SIZE; ++y)
             {
                 for (int z = 0; z < IGenerator.ZONE_SIZE; ++z)
                 {
-                    Vector3Int realCoord = new(
-                        x + (zone.x * IGenerator.ZONE_SIZE),
-                        y + (zone.y * IGenerator.ZONE_SIZE),
-                        z + (zone.z * IGenerator.ZONE_SIZE));
-                    if (realCoord.y < heights[x, z] - MAX_DIRT_HEIGHT)
+                    int realY = y + YCorrection;
+                    if (realY < heights[x, z] - MAX_DIRT_HEIGHT)
                         result[x, y, z] = BlocType.Stone;
-                    else if (realCoord.y < heights[x, z])
+                    else if (realY < heights[x, z])
                         result[x, y, z] = BlocType.Dirt;
                 }
             }
