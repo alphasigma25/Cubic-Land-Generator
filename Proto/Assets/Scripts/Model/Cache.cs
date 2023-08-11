@@ -23,15 +23,13 @@ internal class TriCache<T>
                     T gen = generator(x, y, z);
                     n2[z] = gen;
                     return gen;
-                }
-                else
+                } else
                 {
                     T gen = generator(x, y, z);
                     n1[y] = new() { { z, gen } };
                     return gen;
                 }
-            }
-            else
+            } else
             {
                 T gen = generator(x, y, z);
                 Dictionary<int, T> res1 = new() { { z, gen } };
@@ -66,8 +64,7 @@ internal class BiCache<T>
                 T gen = generator(x, y);
                 n2[y] = gen;
                 return gen;
-            }
-            else
+            } else
             {
                 T gen = generator(x, y);
                 cache[x] = new() { { y, gen } };

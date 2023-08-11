@@ -28,9 +28,9 @@ internal class AnneSoGenerator1 : IGenerator
                         x + (zone.x * IGenerator.ZONE_SIZE),
                         y + (zone.y * IGenerator.ZONE_SIZE),
                         z + (zone.z * IGenerator.ZONE_SIZE));
-                    if (realCoord.z < heights[x, y] - MAX_STONE_HEIGHT)
+                    if (realCoord.y < heights[x, z] - MAX_STONE_HEIGHT)
                         result[x, y, z] = BlocType.Stone;
-                    else if (realCoord.z < heights[x, y])
+                    else if (realCoord.y < heights[x, z])
                         result[x, y, z] = BlocType.Dirt;
                 }
             }
