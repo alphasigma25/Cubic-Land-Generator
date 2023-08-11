@@ -86,9 +86,8 @@ internal class ChunkManager
 
         BlocType[,,] zone = chunks[chunkCoordinate.x, chunkCoordinate.y, chunkCoordinate.z];
 
-        int decalX = chunkCoordinate.x * IGenerator.ZONE_SIZE;
-        int decalY = chunkCoordinate.y * IGenerator.ZONE_SIZE;
-        int decalZ = chunkCoordinate.z * IGenerator.ZONE_SIZE;
+        Vector3Int zonePos = new(
+            chunkCoordinate.x * IGenerator.ZONE_SIZE, chunkCoordinate.y * IGenerator.ZONE_SIZE, chunkCoordinate.z * IGenerator.ZONE_SIZE);
 
         const int maxMoins = IGenerator.ZONE_SIZE - 1;
 
@@ -96,8 +95,8 @@ internal class ChunkManager
         {
             for (int k = 0; k < IGenerator.ZONE_SIZE; k++)
             {
-                GenerateBloc(list, zone, 0, j, k, decalX, decalY, decalZ);
-                GenerateBloc(list, zone, maxMoins, j, k, decalX, decalY, decalZ);
+                GenerateBloc(list, zone, new Vector3Int(0, j, k), zonePos);
+                GenerateBloc(list, zone, new Vector3Int(maxMoins, j, k), zonePos);
             }
         }
 
@@ -105,23 +104,26 @@ internal class ChunkManager
         {
             for (int k = 0; k < IGenerator.ZONE_SIZE; k++)
             {
-                GenerateBloc(list, zone, i, 0, k, decalX, decalY, decalZ);
-                GenerateBloc(list, zone, i, maxMoins, k, decalX, decalY, decalZ);
+                GenerateBloc(list, zone, new Vector3Int(i, 0, k), zonePos);
+                GenerateBloc(list, zone, new Vector3Int(i, maxMoins, k), zonePos);
             }
 
             for (int j = 1; j < maxMoins; j++)
             {
-                GenerateBloc(list, zone, i, j, 0, decalX, decalY, decalZ);
-                GenerateBloc(list, zone, i, j, maxMoins, decalX, decalY, decalZ);
+                GenerateBloc(list, zone, new Vector3Int(i, j, 0), zonePos);
+                GenerateBloc(list, zone, new Vector3Int(i, j, maxMoins), zonePos);
 
                 for (int k = 1; k < maxMoins; k++)
                 {
-                    bool nearAir = zone[i + 1, j, k] == BlocType.Air || zone[i - 1, j, k] == BlocType.Air ||
-                        zone[i, j + 1, k] == BlocType.Air || zone[i, j - 1, k] == BlocType.Air ||
-                        zone[i, j, k + 1] == BlocType.Air || zone[i, j, k - 1] == BlocType.Air;
+                    if (zone[i, j, k] != BlocType.Air)
+                    {
+                        bool nearAir = zone[i + 1, j, k] == BlocType.Air || zone[i - 1, j, k] == BlocType.Air ||
+                            zone[i, j + 1, k] == BlocType.Air || zone[i, j - 1, k] == BlocType.Air ||
+                            zone[i, j, k + 1] == BlocType.Air || zone[i, j, k - 1] == BlocType.Air;
 
-                    if (nearAir)
-                        GenerateBloc(list, zone, i, j, k, decalX, decalY, decalZ);
+                        if (nearAir)
+                            GenerateBloc(list, zone, new Vector3Int(i, j, k), zonePos);
+                    }
                 }
             }
         }
@@ -130,15 +132,18 @@ internal class ChunkManager
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void GenerateBloc(List<GameObject> list, BlocType[,,] zone, int i, int j, int k, int decalX, int decalY, int decalZ)
+    private void GenerateBloc(List<GameObject> list, BlocType[,,] zone, Vector3Int localPos, Vector3Int zonePos)
     {
-        BlocType type = zone[i, j, k];
+        BlocType type = zone[localPos.x, localPos.y, localPos.z];
         if (type == BlocType.Air)
             return;
 
+        Vector3Int finalPos = localPos + zonePos;
+
         GameObject newCube
             = Object.Instantiate(
-                RessourcesManager.Cube, new Vector3(i + decalX, j + decalY, k + decalZ), Quaternion.identity);
+                RessourcesManager.Cube, new Vector3(finalPos.x, finalPos.y, finalPos.z), Quaternion.identity);
+
         newCube.GetComponent<MeshRenderer>().material = RessourcesManager.GetMaterial(type);
         list.Add(newCube);
     }
